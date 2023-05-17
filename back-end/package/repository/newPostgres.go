@@ -10,26 +10,31 @@ import (
 	_ "github.com/lib/pq"
 )
 
+//docker run --name=postgres -e POSTGRES_PASSWORD='qwerty' -p 5432:5432 -d --rm postgres
+
 func NewPostgresDB(conf config.Config) *sqlx.DB {
 	logger := logging.GetLogger()
 
-	cr := "user=postgres password=qwerty host=localhost port=5432 dbname=postgres sslmode=disable"
+	cr := fmt.Sprintf("user=%s password=%s host=%s port=%s dbname=%s sslmode=disable",
+		conf.Name, conf.Password, conf.Host, conf.DBPort, conf.DBName)
+
+	logger.Info(cr)
 
 	db, err := sqlx.Connect("postgres", cr)
 	if err != nil {
 		logger.Fatal(err)
 	}
 
-	db.Exec("DROP SCHEMA tasks CASCADE")
-	
+	db.Exec(fmt.Sprintf("DROP SCHEMA %s CASCADE", conf.Schema))
+
 	_, err = db.Exec(fmt.Sprintf(
-		"CREATE SCHEMA IF NOT EXISTS %s; SET search_path TO %s", 
+		"CREATE SCHEMA IF NOT EXISTS %s; SET search_path TO %s",
 		conf.Schema, conf.Schema,
 	))
 	if err != nil {
 		logger.Fatal(err)
 	}
-	
+
 	sqlFile, err := ioutil.ReadFile("postgres.sql")
 	if err != nil {
 		logger.Fatal(err)

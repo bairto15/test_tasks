@@ -1,11 +1,12 @@
 import React from "react";
+import { config } from "./config";
 
 export default function Title({ login, password, setRouter }) {
     async function handleOut() {
         try {
-            const res = await fetch("http://localhost:8080/api", {
+            const res = await fetch(`http://localhost:${config.port}/api`, {
                 method: "PUT",
-                headers: { 
+                headers: {
                     "Content-Type": "application/json;charset=utf-8",
                     "Authorization": login
                 },

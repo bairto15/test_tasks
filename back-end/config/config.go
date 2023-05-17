@@ -6,12 +6,14 @@ import (
 )
 
 type Config struct {
-	Port     string `json:"port"`
-	Host     string `json:"address"`
-	Name     string `json:"name"`
-	Password string `json:"password"`
-	DBName   string `json:"db_name"`
-	Schema   string `json:"shema"`
+	PortServer    string `json:"port_server"`
+	PortServerGin string `json:"port_server_gin"`
+	Host          string `json:"host"`
+	Name          string `json:"name"`
+	Password      string `json:"password"`
+	DBName        string `json:"db_name"`
+	DBPort        string `json:"db_port"`
+	Schema        string `json:"shema"`
 }
 
 func Get() (Config, error) {

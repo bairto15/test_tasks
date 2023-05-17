@@ -13,19 +13,19 @@ func (h *Handler) out(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 	
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
 	err = h.service.Out(req.Login)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 

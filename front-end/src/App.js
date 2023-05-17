@@ -1,5 +1,6 @@
 import React from "react";
 import Title from "./Title";
+import { config } from "./config";
 
 export default function App() {
   const [router, setRouter] = React.useState("auth")
@@ -17,6 +18,8 @@ export default function App() {
 
   const [result, setResult] = React.useState("")
 
+  const host = `http://localhost:${config.port}/api`
+
   React.useEffect(() => {
     if (router === "auth") {
       setIdUser("")
@@ -32,7 +35,7 @@ export default function App() {
   async function handleAuth() {
     console.log(login)
     try {
-      const res = await fetch("http://localhost:8080/api", {
+      const res = await fetch(host, {
         method: "POST",
         headers: {
           "Content-Type": "application/json;charset=utf-8",
@@ -44,6 +47,10 @@ export default function App() {
       const response = await res.json();
 
       console.log(response)
+
+      if (response.errors) {
+        alert(response.errors)
+      }
 
       if (response?.variants) {
         setRouter("start")
@@ -60,7 +67,8 @@ export default function App() {
   async function handleTask(idVariant) {
     idVariant && setId_variant(idVariant)
     try {
-      const url = `http://localhost:8080/api?idTest=${idTest}&idUser=${isUser}&answer=${answer}&idTask=${task.Count ? task.Count + 1 : "1"}&idVariant=${idVariant ?? id_variant}&corrAnswer=${task.CorrectAnswer}`
+      const url = `${host}?idTest=${idTest}&idUser=${isUser}&answer=${answer}&idTask=${
+        task.Count ? task.Count + 1 : "1"}&idVariant=${idVariant ?? id_variant}&corrAnswer=${task.CorrectAnswer ?? ""}`
 
       console.log(url)
 
@@ -76,6 +84,10 @@ export default function App() {
       const response = await res.json();
 
       console.log(response)
+
+      if (response.errors) {
+        alert(response.errors)
+      }
 
       if (response?.task) {
         setRouter("test")

@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"path"
+	"time"
 
 	"github.com/natefinch/lumberjack"
 	"github.com/sirupsen/logrus"
@@ -14,9 +15,12 @@ func Init() {
 	l := logrus.New()
 	l.SetReportCaller(true)
 
+	now := time.Now()
+	date := now.Format("2006-01-02")
+
 	logFile := &lumberjack.Logger{
-		Filename:  "log/log.log",
-		MaxSize:    2,
+		Filename:  fmt.Sprintf("log/log-%s.log", date),
+		MaxSize:    5,
 		MaxBackups: 2,
 		MaxAge:     10, //days
 	}
@@ -26,7 +30,7 @@ func Init() {
 	})
 
 	warnFile := &lumberjack.Logger{
-		Filename:   "log/warn.log",
+		Filename:   fmt.Sprintf("log/warn-%s.log", date),
 		MaxSize:    2,
 		MaxBackups: 2,
 		MaxAge:     10,
@@ -39,7 +43,7 @@ func Init() {
 	})
 
 	errFile := &lumberjack.Logger{
-		Filename:  "log/error.log",
+		Filename:  fmt.Sprintf("log/error-%s.log", date),
 		MaxSize:    2,
 		MaxBackups: 2,
 		MaxAge:     10,

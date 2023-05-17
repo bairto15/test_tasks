@@ -2,7 +2,6 @@ package http_net
 
 import (
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 )
@@ -18,30 +17,30 @@ func (h *Handler) auth(w http.ResponseWriter, r *http.Request) {
 
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 	
 	err = json.Unmarshal(body, &req)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
 	idUser, err := h.service.Auth(req.Login, req.Password)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
 	if idUser == "" {
-		fmt.Fprint(w, "доступ запрещен")
+		w.Write(responseErr("доступ запрещен"))
 		return
 	}
 
 	variants, err := h.service.GetVariants()
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
@@ -52,7 +51,7 @@ func (h *Handler) auth(w http.ResponseWriter, r *http.Request) {
 
 	v, err := json.Marshal(res)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 

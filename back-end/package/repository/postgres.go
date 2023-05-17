@@ -25,6 +25,8 @@ func (r *Postgres) GetUser(login, password string) (user User, err error) {
 	err = r.db.Get(&user, query, login, password)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("GetUser query executed successfully")
 	}
 
 	return
@@ -37,6 +39,8 @@ func (r *Postgres) GetVariants() (variants []Variant, err error) {
 	rows, err := r.db.Query(query)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("GetVariants query executed successfully")
 	}
 	defer rows.Close()
 
@@ -62,6 +66,8 @@ func (r *Postgres) GetTasks(count, idVariant string) (tasks Tasks, err error) {
 	err = r.db.Get(&tasks, query, count, idVariant)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("GetTasks query executed successfully")
 	}
 
 	return
@@ -74,6 +80,8 @@ func (r *Postgres) StartTest(idUser, idVariant string) (idTest string, err error
 	row := r.db.QueryRow(query, idUser, idVariant)
 	if err = row.Scan(&idTest); err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("StartTest query executed successfully")
 	}
 
 	return
@@ -86,6 +94,8 @@ func (r *Postgres) GetAnswer(idAnswer string) (answers Answers, err error) {
 	err = r.db.Select(&answers, query, idAnswer)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("GetAnswer query executed successfully")
 	}
 
 	return
@@ -98,6 +108,8 @@ func (r *Postgres) AddAnswer(idTest, idUser, answer, corrAnswer string) (err err
 	_, err = r.db.Exec(query, idTest, idUser , answer, corrAnswer)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("AddAnswer query executed successfully")
 	}
 
 	return
@@ -110,6 +122,8 @@ func (r *Postgres) AddResult(idTest, idUser string, persent int) (err error) {
 	_, err = r.db.Exec(query, idTest, idUser, persent)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("AddResult query executed successfully")
 	}
 
 	return
@@ -122,6 +136,8 @@ func (r *Postgres) GetResult(idTest string) (result Result, err error) {
 	err = r.db.Get(&result, query, idTest)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("GetResult query executed successfully")
 	}
 
 	return
@@ -134,6 +150,8 @@ func (r *Postgres) GetAnswers(idTest string) (answers []Answers, err error) {
 	rows, err := r.db.Query(query, idTest)
 	if err != nil {
 		r.logger.Error(err)
+	} else {
+		r.logger.Info("GetAnswers query executed successfully")
 	}
 	defer rows.Close()
 
@@ -156,6 +174,11 @@ func (r *Postgres) GetAnswers(idTest string) (answers []Answers, err error) {
 func (r *Postgres) Auth(login string) (err error) {
 	query := "UPDATE users SET auth=true, date_auth=current_timestamp WHERE login=$1"
 	_, err = r.db.Exec(query, login)
+	if err != nil {
+		r.logger.Error(err)
+	} else {
+		r.logger.Info("Auth query executed successfully")
+	}
 	
 	return
 }
@@ -164,6 +187,11 @@ func (r *Postgres) Auth(login string) (err error) {
 func (r *Postgres) Out(login string) (err error) {
 	query := "UPDATE users SET auth=false, date_out=current_timestamp WHERE login=$1"
 	_, err = r.db.Exec(query, login)
+	if err != nil {
+		r.logger.Error(err)
+	} else {
+		r.logger.Info("Out query executed successfully")
+	}
 
 	return
 }

@@ -33,7 +33,11 @@ func (s *Service) Task(idUser, count, idVariant, idTest string) (interface{}, er
 			}
 		}
 
+		s.mutex.Lock() 
+		
 		s.repository.AddResult(idTest, idUser, (countCorrAnswer*100/len(answers)*100)/100)
+		
+		s.mutex.Unlock()
 
 		task, err := s.repository.GetResult(idTest)
 
@@ -69,11 +73,13 @@ func (s *Service) GetResult(idTest string) (result repository.Result, err error)
 
 //Добавить ответ
 func (s *Service) AddAnswer(idTest, idUser, answer, corrAnswer string) (err error) {
-	if idUser == "" || idTest == "" || answer == "" {
-		return
+	if answer == "" && corrAnswer != "" {
+		return fmt.Errorf("Не указан ответ")
 	}
 
-	err = s.repository.AddAnswer(idTest, idUser, answer, corrAnswer)
+	if answer != "" {
+		err = s.repository.AddAnswer(idTest, idUser, answer, corrAnswer)
+	}
 
 	return
 }

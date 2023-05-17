@@ -1,7 +1,10 @@
 {
-    "port": ":8080",
-    "address": "",
-    "name": "puzzle-db",
+    "port_server": ":8080",
+    "port_server_gin": "8081",
+    "host": "localhost",
+    "name": "postgres",
     "password": "qwerty",
+    "db_name": "postgres",
+    "db_port": "5436",
     "shema": "tasks"
 }

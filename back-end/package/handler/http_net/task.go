@@ -2,7 +2,6 @@ package http_net
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 )
 
@@ -15,7 +14,7 @@ func (h *Handler) task(w http.ResponseWriter, r *http.Request) {
 
 	err := h.service.AddAnswer(idTest, idUser, answer, corrAnswer)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
@@ -24,15 +23,23 @@ func (h *Handler) task(w http.ResponseWriter, r *http.Request) {
 	
 	task, err := h.service.Task(idUser, idTask, idVariant, idTest)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
 	t, err := json.Marshal(task)
 	if err != nil {
-		fmt.Fprint(w, err.Error())
+		w.Write(responseErr(err.Error()))
 		return
 	}
 
 	w.Write(t)
+}
+
+func responseErr(message interface{}) []byte {
+	res := map[string]interface{}{"errors": message}
+	
+	t, _ := json.Marshal(res)
+	
+	return t
 }
